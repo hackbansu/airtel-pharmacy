@@ -5,7 +5,7 @@ const dbPoolConf = {
     host: 'localhost',
     user: 'hackbansu',
     password: 'developer6272426',
-    database: 'airtel',
+    database: 'airtel_chemist',
 };
 const pool = mysql.createPool(dbPoolConf);
 let num_requests = 0;
