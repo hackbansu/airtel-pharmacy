@@ -23,6 +23,26 @@ function getProductsDetails(identity, details, done) {
     });
 }
 
+//get required details(via details(array)) of products via p_name_identity(object) and call done(result, fields)
+function searchProducts(identity, details, done) {
+    let sql = "SELECT ?? FROM products WHERE p_name LIKE '%";
+    for(i of identity.p_name){
+        sql += i + '%'
+    }
+    sql += "'";
+
+    pool.getConnection(function (err, connection) {
+        if (err) throw err;
+
+        connection.query(sql, [details], function (err, result, fields) {
+            connection.release();
+            if (err) throw err;
+
+            done(result, fields);
+        });
+    });
+}
+
 //decrement available quantity by 1 of products via identity(object) and call done(result, fields)
 function decrementProductsQuantity(identity, done) {
     let sql = createQueryHavingWhereClause('UPDATE products SET available_quantity = available_quantity - 1 WHERE', identity);
@@ -39,9 +59,10 @@ function decrementProductsQuantity(identity, done) {
     });
 }
 
-//increment available quantity by 1 of products via identity(object) and call done(result, fields)
+//increment available quantity by 1 of products via identity(p_name) and call done(result, fields)
 function incrementProductsQuantity(identity, done) {
-    let sql = createQueryHavingWhereClause('UPDATE products SET available_quantity = available_quantity + 1 WHERE', identity);
+    let sql = 'UPDATE products SET available_quantity = available_quantity + ' + mysql.escape(identity.quantity)
+        + ' WHERE p_name = '+ mysql.escape(identity.p_name);
 
     pool.getConnection(function (err, connection) {
         if (err) throw err;
@@ -58,6 +79,7 @@ function incrementProductsQuantity(identity, done) {
 
 module.exports = {
     getProductsDetails,
+    searchProducts,
     decrementProductsQuantity,
     incrementProductsQuantity,
 };
