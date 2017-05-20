@@ -53,5 +53,6 @@ module.exports.createQueryHavingWhereClause = createQueryHavingWhereClause;
 
 //exporting things
 module.exports = {
-    productsTable: require('./productsTable.js'),
+    productsTable: require('./productsTable'),
+    usersTable : require('./usersTable')
 };
