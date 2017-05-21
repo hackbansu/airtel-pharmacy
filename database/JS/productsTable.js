@@ -76,6 +76,35 @@ function incrementProductsQuantity(identity, done) {
     });
 }
 
+function addNewProduct(product, done) {
+    let sql = "INSERT INTO ITEMS SET ?";
+
+    pool.getConnection(function (err, connection) {
+        if (err) throw err;
+
+        connection.query(sql, [product], function (err, result, fields) {
+            connection.release();
+            if (err) throw err;
+
+            done(result, fields);
+        });
+    });
+}
+
+function removeProduct(product, done) {
+    let sql = "DELETE FROM ITEMS WHERE p_name = " + mysql.escape(product.p_name);
+
+    pool.getConnection(function (err, connection) {
+        if (err) throw err;
+
+        connection.query(sql, function (err, result, fields) {
+            connection.release();
+            if (err) throw err;
+
+            done(result, fields);
+        });
+    });
+}
 
 module.exports = {
     getProductsDetails,
